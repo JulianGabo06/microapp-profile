@@ -1,0 +1,63 @@
+name: PR verify
+
+# Verifica cada pull request de la micro app: typecheck, tests (Jest) y lint (Biome).
+# El repo depende de `file:../MicroApps/packages/uniwind-rspack`, así que el host
+# (JulianGabo06/MicroAppTest, público) se clona como carpeta hermana, igual que en local.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pr-verify-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Rama del host con `packages/uniwind-rspack`. Cambiar a `main` cuando se mergee allí.
+  HOST_REF: develop
+
+jobs:
+  verify:
+    name: Typecheck + tests + lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: microapp-profile
+
+    steps:
+      - name: Checkout micro app
+        uses: actions/checkout@v4
+        with:
+          path: microapp-profile
+
+      - name: Checkout host (solo packages/uniwind-rspack)
+        uses: actions/checkout@v4
+        with:
+          repository: JulianGabo06/MicroAppTest
+          ref: ${{ env.HOST_REF }}
+          path: MicroApps
+          sparse-checkout: packages/uniwind-rspack
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: microapp-profile/.nvmrc
+          cache: npm
+          cache-dependency-path: microapp-profile/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Tests (Jest)
+        run: npm test
+
+      - name: Lint (Biome)
+        run: npx biome ci .

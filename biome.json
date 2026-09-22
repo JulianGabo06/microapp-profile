@@ -14,7 +14,8 @@
       "!**/.expo",
       "!**/android",
       "!**/ios",
-      "!**/*.tsbuildinfo"
+      "!**/*.tsbuildinfo",
+      "!**/uniwind-types.d.ts"
     ]
   },
   "formatter": {
