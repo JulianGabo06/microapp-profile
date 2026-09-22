@@ -18,7 +18,8 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "bundle:android": "react-native bundle --platform android --dev false --entry-file index.js",
-    "bundle:ios": "react-native bundle --platform ios --dev false --entry-file index.js"
+    "bundle:ios": "react-native bundle --platform ios --dev false --entry-file index.js",
+    "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output build/output/android/index.bundle --assets-dest build/output/android/res"
   },
   "dependencies": {
     "@microapps/uniwind-rspack": "file:../MicroApps/packages/uniwind-rspack",
