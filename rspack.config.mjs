@@ -6,6 +6,7 @@ import { ExpoModulesPlugin } from '@callstack/repack-plugin-expo-modules';
 
 const require = createRequire(import.meta.url);
 const { getSharedDependencies } = require('./shared.js');
+const { UniwindRspackPlugin } = require('@microapps/uniwind-rspack');
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
@@ -48,6 +49,7 @@ export default Repack.defineRspackConfig(({ mode, platform }) => {
         ],
       }),
       new ExpoModulesPlugin(),
+      new UniwindRspackPlugin({ cssEntryFile: './global.css', platform }),
       new Repack.plugins.ModuleFederationPluginV2({
         name: 'profile',
         filename: 'profile.container.js.bundle',
